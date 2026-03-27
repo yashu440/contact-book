@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contacts</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <script>
+    function del(id){
+        if(confirm("Delete this contact?")){
+            window.location="/delete/"+id;
+        }
+    }
+
+    function showDetails(name, phone, email, img){
+        document.getElementById("popup").style.display="flex";
+        document.getElementById("pname").innerText=name;
+        document.getElementById("pphone").innerText=phone;
+        document.getElementById("pemail").innerText=email;
+        document.getElementById("pimg").src=img;
+    }
+
+    function closePopup(){
+        document.getElementById("popup").style.display="none";
+    }
+
+    function toggleDark(){
+        document.body.classList.toggle("dark");
+    }
+    </script>
+
+</head>
+<body>
+
+<h1>📱 My Contacts</h1>
+
+<!-- 🔍 Search -->
+<form>
+    <input name="search" placeholder="Search contacts..." value="{{search}}">
+    <button>Search</button>
+</form>
+
+<!-- 🔝 Top Buttons -->
+<div style="text-align:center;margin-bottom:20px;">
+    <a href="/add"><button>➕ Add</button></a>
+    <a href="/logout"><button>🚪 Logout</button></a>
+    <button onclick="toggleDark()">🌙 Dark</button>
+</div>
+
+<!-- 📇 Contacts -->
+<div class="grid">
+
+{% for c in contacts %}
+<div class="card">
+
+<img src="/uploads/{{c[5]}}" 
+onclick="showDetails('{{c[2]}}','{{c[3]}}','{{c[4]}}','/uploads/{{c[5]}}')" 
+onerror="this.src='https://via.placeholder.com/100'">
+
+<h3>{{c[2]}}</h3>
+
+<p>📞 {{c[3]}}</p>
+<p>📧 {{c[4]}}</p>
+
+<div class="actions">
+<a href="tel:{{c[3]}}">📞</a>
+<a href="https://wa.me/{{c[3]}}" target="_blank">💬</a>
+<a href="/edit/{{c[0]}}">✏️</a>
+<button onclick="del({{c[0]}})">🗑️</button>
+<a href="/favorite/{{c[0]}}">{{'⭐' if c[6] else '☆'}}</a>
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+<!-- 🔥 POPUP -->
+<div id="popup" class="popup">
+
+<div class="popup-box">
+
+<span onclick="closePopup()" class="close">❌</span>
+
+<img id="pimg">
+
+<h2 id="pname"></h2>
+<p id="pphone"></p>
+<p id="pemail"></p>
+
+<a id="callbtn" href="#">📞 Call</a>
+<a id="wabtn" href="#" target="_blank">💬 WhatsApp</a>
+
+</div>
+</div>
+
+</body>
+</html>
